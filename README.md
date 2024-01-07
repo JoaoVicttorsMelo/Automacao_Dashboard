@@ -2,6 +2,9 @@
 
 <p>Este projeto usa o Selenium WebDriver e SQLAlchemy para automatizar ações em um site da web. Ele faz login em uma página da web, verifica se há alertas e aceita-os, encontra um elemento específico na página e compara o texto desse elemento com o texto salvo em um banco de dados. Se o texto for o mesmo, ele envia um e-mail indicando que o valor está travado.</p>
 
+![image](https://github.com/JoaoVicttorsMelo/Automacao_Dashboard/assets/69211741/6ddfe8fc-ac41-4ebf-8845-447c9499397b)
+
+
 <h2>Requisitos</h2>
 
 <ul>
