@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Gráficos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+        .container-3d {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transform: perspective(0px) rotateX(0deg); /* Ajuste para tornar mais reto */
+            transition: box-shadow 0.3s ease;
+            margin-top: 50px;
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        input[type="date"] {
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .graph-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .dark-mode .container-3d {
+            background-color: #1e1e1e;
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.6);
+        }
+
+        .dark-mode .graph-container {
+            background-color: #1e1e1e;
+            box-shadow: 0 0 10px rgba(255,255,255,0.1);
+        }
+
+        /* Estilos do botão Voltar */
+        .btn-voltar {
+            position: absolute;
+            top: 10px;
+            left: 10px; /* Ajuste para o canto superior esquerdo */
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none; /* Remover sublinhado do link */
+        }
+
+        .btn-voltar:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <a href="/home" class="btn-voltar">Voltar</a>
+    <div class="container-3d">
+        <h1>Gerador de Gráficos</h1>
+        <div class="container">
+            <div class="form-group">
+                <label for="data-inicial">Selecione a data inicial:</label>
+                <input type="date" id="data-inicial" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="data-final">Selecione a data final:</label>
+                <input type="date" id="data-final" class="form-control">
+            </div>
+            <button id="gerar-grafico-btn" class="btn btn-success">Gerar Gráfico</button>
+            <div id="grafico-container" class="graph-container mt-5" style="display: none;">
+                <h2>Gráfico:</h2>
+                <img id="grafico" src="" alt="Gráfico" class="img-fluid">
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        // Verifica o tema ao carregar a página
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        });
+
+        // Função para alternar o tema
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+        }
+
+        $(document).ready(function() {
+            $("#gerar-grafico-btn").click(function() {
+                var dataInicial = $("#data-inicial").val();
+                var dataFinal = $("#data-final").val();
+
+                if (!dataInicial || !dataFinal) {
+                    alert("Por favor, selecione ambas as datas.");
+                    return;
+                }
+
+                $.ajax({
+                    url: "/gerar_grafico_ajax",
+                    method: "GET",
+                    data: {
+                        data_inicial: dataInicial,
+                        data_final: dataFinal
+                    },
+                    success: function(response) {
+                        $("#grafico").attr("src", response.img_str);
+                        $("#grafico-container").show();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

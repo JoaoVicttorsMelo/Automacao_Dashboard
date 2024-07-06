@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: #343a40;
+            padding: 20px;
+            transition: left 0.3s;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar h2 {
+            color: #fff;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .sidebar ul {
+            padding: 0;
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #495057;
+            transition: all 0.3s;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #6c757d;
+        }
+
+        .toggle-btn {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            font-size: 16px;
+            background-color: #343a40;
+            color: white;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            transition: left 0.3s;
+            z-index: 1;
+        }
+
+        .sidebar.open + .toggle-btn {
+            left: 250px;
+        }
+
+        .content {
+            margin-left: 20px;
+            padding: 20px;
+            transition: margin-left 0.3s;
+        }
+
+        .btn-custom {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+
+        .user-info {
+            position: relative;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 1;
+        }
+
+        .user-info .username {
+            z-index: 2;
+        }
+
+        .logout-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .bubbles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #00ff00, #0000ff);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        .bubble:nth-child(1) { left: 10%; animation-duration: 15s; animation-delay: 2s; }
+        .bubble:nth-child(2) { left: 20%; animation-duration: 20s; animation-delay: 4s; }
+        .bubble:nth-child(3) { left: 25%; animation-duration: 17s; animation-delay: 6s; }
+        .bubble:nth-child(4) { left: 40%; animation-duration: 18s; animation-delay: 8s; }
+        .bubble:nth-child(5) { left: 55%; animation-duration: 15s; animation-delay: 10s; }
+        .bubble:nth-child(6) { left: 70%; animation-duration: 20s; animation-delay: 12s; }
+        .bubble:nth-child(7) { left: 80%; animation-duration: 17s; animation-delay: 14s; }
+        .bubble:nth-child(8) { left: 90%; animation-duration: 19s; animation-delay: 16s; }
+
+       @keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-30px); } /* Subir mais alto */
+    100% { transform: translateY(0); }
+}
+
+        /* Dark theme styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .dark-mode .sidebar {
+            background-color: #1e1e1e;
+        }
+
+        .dark-mode .sidebar a {
+            color: #bbb;
+        }
+
+        .dark-mode .sidebar a:hover {
+            background-color: #333;
+        }
+
+        .dark-mode .btn-theme {
+            background-color: #00cc00;
+            color: #000;
+        }
+
+        .dark-mode .btn-theme:hover {
+            background-color: #00aa00;
+        }
+
+        .btn-theme {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            z-index: 1;
+        }
+
+        input[type="checkbox"] {
+            display: none;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 30px;
+            background-color: #ccc;
+            border-radius: 15px;
+            position: relative;
+            transition: background-color 0.3s;
+        }
+
+        label::after {
+            content: '';
+            width: 24px;
+            height: 24px;
+            background-color: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.3s;
+        }
+
+        input[type="checkbox"]:checked + label::after {
+            transform: translateX(30px);
+        }
+
+        input[type="checkbox"]:checked + label {
+            background-color: #555;
+        }
+
+        .sun, .moon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+        }
+
+        .sun {
+            left: 5px;
+            filter: none;
+            transition: filter 0.3s;
+        }
+
+        input[type="checkbox"]:checked + label .sun {
+            filter: brightness(1.5);
+        }
+
+        .moon {
+            right: 5px;
+        }
+
+        .btn-theme:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-theme i {
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+
+        .dark-mode .btn-theme i:first-child {
+            display: none;
+        }
+
+        .dark-mode .btn-theme i:last-child {
+            display: inline-block;
+        }
+
+        .dark-mode .btn-theme.dark-mode-active {
+            transform: translateX(20px);
+        }
+
+        /* Add new style for dark-mode-toggle in the top right corner */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="user-info">
+            <span class="username">{{ usuario }}</span>
+            <div class="bubbles">
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+            </div>
+        </div>
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="{{ url_for('gerar_grafico') }}">Gerar Gráfico</a></li>
+            <li><a href="{{ url_for('gerar_lista') }}">Gerar Lista</a></li>
+            {% if isadmin %}
+                <li><a href="{{ url_for('cadastrar_funcionario') }}">Cadastrar Funcionário</a></li>
+            {% endif %}
+        </ul>
+        <button class="logout-btn" onclick="location.href='{{ url_for('logout') }}'"><i class="fas fa-power-off"></i> Logout</button>
+    </div>
+
+    <button class="toggle-btn" id="toggleBtn" onclick="toggleSidebar()"><<<</button>
+    <div class="container">
+        <h1>Conteúdo Principal</h1>
+        <p>Este é o conteúdo principal da página.</p>
+    </div>
+
+    <div class="dark-mode-toggle">
+        <input type="checkbox" id="dark-mode-toggle" onclick="toggleTheme()">
+        <label for="dark-mode-toggle">
+            <svg class="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="5" fill="#FFC107"/>
+                <line x1="12" y1="1" x2="12" y2="3" stroke="#FFC107" stroke-width="2"/>
+                <line x1="12" y1="21" x2="12" y2="23" stroke="#FFC107" stroke-width="2"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="#FFC107" stroke-width="2"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="#FFC107" stroke-width="2"/>
+                <line x1="1" y1="12" x2="3" y2="12" stroke="#FFC107" stroke-width="2"/>
+                <line x1="21" y1="12" x2="23" y2="12" stroke="#FFC107" stroke-width="2"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="#FFC107" stroke-width="2"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="#FFC107" stroke-width="2"/>
+            </svg>
+            <svg class="moon" width="64px" height="64px" viewBox="0 0 24 24" fill="none"
+                 xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier"
+                                                                                                                                                                 stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3.32031 11.6835C3.32031 16.6541 7.34975 20.6835 12.3203 20.6835C16.1075 20.6835 19.3483 18.3443 20.6768 15.032C19.6402 15.4486 18.5059 15.6834 17.3203 15.6834C12.3497 15.6834 8.32031 11.654 8.32031 6.68342C8.32031 5.50338 8.55165 4.36259 8.96453 3.32996C5.65605 4.66028 3.32031 7.89912 3.32031 11.6835Z" stroke="#000000"
+                                                                                                                                                                                                                                                                                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+        </label>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('open');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isActive = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isActive ? 'dark' : 'light');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('dark-mode-toggle').checked = true;
+            }
+        });
+    </script>
+</body>
+</html>

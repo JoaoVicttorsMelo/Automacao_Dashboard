@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerar Lista</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        /* Estilo geral */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            transition: background-color 0.3s ease;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilo do botão */
+        #btn-gerar-lista {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #btn-gerar-lista:hover {
+            background-color: #0056b3;
+        }
+
+        /* Estilo da lista */
+        .list-group-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Botão Voltar */
+        .btn-voltar {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-voltar:hover {
+            background-color: #218838;
+        }
+
+        /* Dark theme styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .dark-mode .container {
+            background-color: #1e1e1e;
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.6);
+        }
+
+        .dark-mode #btn-gerar-lista {
+            background-color: #00ff00;
+            color: #000;
+        }
+
+        .dark-mode #btn-gerar-lista:hover {
+            background-color: #00cc00;
+        }
+
+        .dark-mode .btn-voltar {
+            background-color: #00cc00;
+            color: #000;
+        }
+
+        .dark-mode .btn-voltar:hover {
+            background-color: #00aa00;
+        }
+
+        .dark-mode .list-group-item {
+            background-color: #2c2c2c;
+            color: #ffffff;
+            border: 1px solid #444;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <a href="/home" class="btn-voltar">Voltar</a>
+    <div class="container">
+        <h1>Gerar Lista</h1>
+        <div class="form-group">
+            <label for="data">Selecione uma data:</label>
+            <input type="date" id="data" class="form-control">
+        </div>
+        <button id="btn-gerar-lista" onclick="gerarLista()">Gerar Lista</button>
+        <div id="lista-container" style="display:none;">
+            <br><br>
+            <h2>Lista:</h2>
+            <ul id="lista" class="list-group"></ul>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        });
+
+        function gerarLista() {
+            let data = $('#data').val();
+            if (!data) {
+                alert('Por favor, selecione uma data.');
+                return;
+            }
+            $.ajax({
+                url: '/gerar_lista_ajax',
+                type: 'GET',
+                data: {
+                    data: data
+                },
+                success: function(response) {
+                    let lista = $('#lista');
+                    lista.empty();
+                    lista.append('<li class="list-group-item"><strong>Horário</strong><span><strong>Valor</strong></span></li>');
+                    response.forEach(function(item) {
+                        const horario = item.created_at.split(' ')[1].substring(0, 5);
+                        const valor = `R$ ${item.text}`;
+                        lista.append('<li class="list-group-item"><span>' + horario + '</span><span>' + valor + '</span></li>');
+                    });
+                    $('#lista-container').show();
+                },
+                error: function(xhr, status, error) {
+                    alert('Erro ao gerar lista: ' + xhr.responseJSON.error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

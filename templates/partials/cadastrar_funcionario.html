@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Funcionário</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+        .container-3d {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .btn-green {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn-green:hover {
+            background-color: #218838;
+        }
+
+        /* Estilos do botão Voltar */
+        .btn-voltar {
+            position: absolute;
+            top: 10px;
+            left: 10px; /* Ajuste para o canto superior esquerdo */
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none; /* Remover sublinhado do link */
+        }
+
+        .btn-voltar:hover {
+            background-color: #218838;
+        }
+
+        .btn-theme, .btn-back {
+            position: absolute;
+            top: 10px;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-theme {
+            right: 10px;
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .btn-theme:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-back {
+            left: 10px;
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        .btn-back:hover {
+            background-color: #5a6268;
+        }
+
+        /* Dark theme styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .dark-mode .container-3d {
+            background-color: #1e1e1e;
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.6);
+        }
+
+        .dark-mode .btn-green {
+            background-color: #00ff00;
+            color: #000;
+        }
+
+        .dark-mode .btn-green:hover {
+            background-color: #00cc00;
+        }
+
+        .dark-mode .btn-theme {
+            background-color: #00cc00;
+            color: #000;
+        }
+
+        .dark-mode .btn-theme:hover {
+            background-color: #00aa00;
+        }
+
+        .dark-mode .btn-back {
+            background-color: #999;
+            color: #000;
+        }
+
+        .dark-mode .btn-back:hover {
+            background-color: #777;
+        }
+         /* Estilos do botão Voltar */
+        .btn-voltar {
+            position: absolute;
+            top: 10px;
+            left: 10px; /* Ajuste para o canto superior esquerdo */
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none; /* Remover sublinhado do link */
+        }
+
+        .btn-voltar:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <a href="/home" class="btn-voltar">Voltar</a>
+    <div class="container-3d">
+        <h1>Cadastrar Funcionário</h1>
+        <form method="POST" action="/cadastrar_funcionario">
+            <div class="form-group">
+                <input type="text" name="usuario" placeholder="Usuário" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <input type="password" name="senha" placeholder="Senha" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <input type="text" name="funcao" placeholder="Função" class="form-control" required>
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" name="isadmin" class="form-check-input">
+                <label class="form-check-label" for="isadmin">Administrador</label>
+            </div>
+            <button type="submit" class="btn-green">Cadastrar</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        });
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+        }
+    </script>
+</body>
+</html>
