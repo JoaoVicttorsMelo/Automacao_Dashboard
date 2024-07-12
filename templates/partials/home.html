@@ -311,10 +311,14 @@
         </div>
         <h2>Menu</h2>
         <ul>
-            <li><a href="{{ url_for('gerar_grafico') }}">Gerar Gráfico</a></li>
-            <li><a href="{{ url_for('gerar_lista') }}">Gerar Lista</a></li>
+           <li><a id="gerarGrafico" href="{{ url_for('gerar_grafico') }}">Gerar Gráfico</a></li>
+            <li><a id="gerarLista" href="{{ url_for('gerar_lista') }}">Gerar Lista</a></li>
+            <li><a id="editarInfo" href="{{ url_for('editar_usuario') }}">Editar Usuario</a></li>
+
             {% if isadmin %}
-                <li><a href="{{ url_for('cadastrar_funcionario') }}">Cadastrar Funcionário</a></li>
+            <li><a id="excluirInfo" href="{{ url_for('excluir_usuario') }}">Excluir Usuario</a></li>
+            <li><a href="{{ url_for('cadastrar_funcionario') }}">Cadastrar Usuario</a></li>
+            <li><a id="log" href="{{ url_for('log') }}">Log</a></li>
             {% endif %}
         </ul>
         <button class="logout-btn" onclick="location.href='{{ url_for('logout') }}'"><i class="fas fa-power-off"></i> Logout</button>
@@ -342,13 +346,50 @@
             </svg>
             <svg class="moon" width="64px" height="64px" viewBox="0 0 24 24" fill="none"
                  xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier"
-                                                                                                                                                                 stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3.32031 11.6835C3.32031 16.6541 7.34975 20.6835 12.3203 20.6835C16.1075 20.6835 19.3483 18.3443 20.6768 15.032C19.6402 15.4486 18.5059 15.6834 17.3203 15.6834C12.3497 15.6834 8.32031 11.654 8.32031 6.68342C8.32031 5.50338 8.55165 4.36259 8.96453 3.32996C5.65605 4.66028 3.32031 7.89912 3.32031 11.6835Z" stroke="#000000"
+                                                                                                      stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3.32031 11.6835C3.32031 16.6541 7.34975 20.6835 12.3203 20.6835C16.1075 20.6835 19.3483 18.3443 20.6768 15.032C19.6402 15.4486 18.5059 15.6834 17.3203 15.6834C12.3497 15.6834 8.32031 11.654 8.32031 6.68342C8.32031 5.50338 8.55165 4.36259 8.96453 3.32996C5.65605 4.66028 3.32031 7.89912 3.32031 11.6835Z" stroke="#000000"
                                                                                                                                                                                                                                                                                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
         </label>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script>
+
+         $(document).ready(function() {
+        // Adicione um event listener para cada botão
+        $('#gerarGrafico').click(function() {
+            registerButtonClick('Gerar Gráfico');
+        });
+
+        $('#gerarLista').click(function() {
+            registerButtonClick('Gerar Lista');
+        });
+
+        $('#editarInfo').click(function() {
+            registerButtonClick('Editar Informações');
+        });
+
+        $('#log').click(function() {
+            registerButtonClick('Log');
+        });
+
+        // Função para registrar o botão clicado
+        function registerButtonClick(buttonName) {
+            // Aqui você pode fazer uma requisição AJAX para enviar os dados de log para o servidor, por exemplo
+            $.ajax({
+                url: '/log_button_click',
+                method: 'POST',
+                data: { button_name: buttonName },
+                success: function(response) {
+                    console.log('Botão clicado registrado:', buttonName);
+                },
+                error: function(err) {
+                    console.error('Erro ao registrar botão clicado:', err);
+                }
+            });
+        }
+    });
+
+
         function toggleSidebar() {
             document.querySelector('.sidebar').classList.toggle('open');
         }
