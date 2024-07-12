@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Usuário</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+        .container-3d {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: box-shadow 0.3s ease;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .btn-green {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-green:hover {
+            background-color: #218838;
+        }
+
+        .btn-voltar {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-voltar:hover {
+            background-color: #218838;
+        }
+
+        /* Dark theme styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .dark-mode .container-3d {
+            background-color: #1e1e1e;
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.6);
+        }
+
+        .dark-mode .btn-green {
+            background-color: #00ff00;
+            color: #000;
+        }
+
+        .dark-mode .btn-green:hover {
+            background-color: #00cc00;
+        }
+
+        .dark-mode .btn-voltar {
+            background-color: #00cc00;
+            color: #000;
+        }
+
+        .dark-mode .btn-voltar:hover {
+            background-color: #00aa00;
+        }
+    </style>
+</head>
+<body>
+    <a href="/home" class="btn-voltar">Voltar</a>
+    <div class="container-3d">
+        <h1>Editar Usuário</h1>
+<form method="post" action="{{ url_for('editar_usuario') }}">
+            <div class="form-group" id="funcionario-select-container">
+                {% if isadmin %}
+                <label for="funcionario-select">Selecionar Funcionário</label>
+                <select id="funcionario-select" class="form-control" name="funcionario_id">
+                    <option value="">Selecione um Funcionário</option>
+                    {% for funcionario in funcionarios %}
+                        <option value="{{ funcionario.id }}" {% if funcionario.id == current_funcionario.id %}selected{% endif %}>{{ funcionario.usuario }}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+            </div>
+            {% if isadmin %}
+            <div class="form-group">
+                <label for="usuario">Nome do Usuário</label>
+                <input type="text" id="usuario" name="usuario" class="form-control" placeholder="Nome do Usuário" value="{{ current_funcionario.usuario }}">
+            </div>
+            {% endif %}
+            <div class="form-group">
+    {% if isadmin %}
+    <label for="funcao">Função</label>
+    <select id="funcao" name="funcao" class="form-control" required>
+        {% for funcao in funcoes %}
+            <option value="{{ funcao[0] }}" {% if funcao[0] == current_funcionario.funcao %}selected{% endif %}>{{ funcao[1] }}</option>
+        {% endfor %}
+    </select>
+    {% endif %}
+</div>
+            <div class="form-group">
+                <label for="senha">{% if not isadmin %}Senha{% else %}Senha (opcional){% endif %}</label>
+                <input type="password" id="senha" name="senha" placeholder="Senha" class="form-control">
+            </div>
+            <div class="form-group">
+        {% if is_ti_admin_user %}
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="isadmin" name="isadmin" {% if current_funcionario.isadmin == 1 %}checked{% endif %}>
+                <label class="form-check-label" for="isadmin">Administrador</label>
+            </div>
+        {% endif %}
+    </div>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+    </div>
+
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+            var isAdmin = {{ isadmin|tojson }};
+            var funcionarioSelect = document.getElementById('funcionario-select');
+            var usuarioInput = document.getElementById('usuario');
+            var funcaoSelect = document.getElementById('funcao');
+            var isAdminCheckbox = document.getElementById('isadmin');
+
+            if (!isAdmin) {
+                // Carregar dados do usuário atual se não for admin
+                var currentFuncionario = {{ current_funcionario|tojson }};
+                usuarioInput.value = currentFuncionario.usuario;
+                funcaoSelect.value = currentFuncionario.funcao;
+                isAdminCheckbox.checked = currentFuncionario.isadmin;
+            }
+
+            if (funcionarioSelect) {
+                funcionarioSelect.addEventListener('change', function() {
+                    var selectedFuncionarioId = this.value;
+                    fetch('/api/funcionario/' + selectedFuncionarioId)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.error) {
+                                alert(data.error);
+                            } else {
+                                usuarioInput.value = data.usuario;
+                                funcaoSelect.value = data.funcao;
+                                isAdminCheckbox.checked = data.isadmin;
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                });
+            }
+        });
+
+       document.addEventListener('DOMContentLoaded', (event) => {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        });
+
+      function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+        }
+</script>
+</body>
+</html>

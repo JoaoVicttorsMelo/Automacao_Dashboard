@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciar Usuários</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css">
+    <style>
+        .inativo {
+            color: gray;
+            opacity: 0.6;
+        }
+
+        /* Estilos do botão Voltar */
+        .btn-voltar {
+            position: absolute;
+            top: 10px;
+            left: 10px; /* Ajuste para o canto superior esquerdo */
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none; /* Remover sublinhado do link */
+        }
+
+        .btn-voltar:hover {
+            background-color: #218838;
+        }
+
+        /* Modo escuro */
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .dark-mode .container {
+            background-color: #1e1e1e;
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.6);
+        }
+
+        .dark-mode .table {
+            color: #ffffff;
+            background-color: #1e1e1e;
+        }
+
+        .dark-mode .table thead th {
+            background-color: #2a2a2a;
+        }
+
+        .dark-mode .table tbody tr {
+            background-color: #1e1e1e;
+        }
+
+        .dark-mode .table tbody tr:nth-of-type(odd) {
+            background-color: #2a2a2a;
+        }
+
+        .dark-mode .table tbody tr.inativo {
+            background-color: #3a3a3a;
+        }
+
+        .dark-mode .table tbody tr:hover {
+            background-color: #3a3a3a;
+        }
+
+        .dark-mode .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .dark-mode .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .dark-mode .btn-primary:hover, .dark-mode .btn-danger:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .dataTables_wrapper .dataTables_filter {
+            color: #ffffff;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            color: #000000;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            color: #ffffff !important;
+            background-color: #1e1e1e !important;
+            border: 1px solid #4a4a4a !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            color: #ffffff !important;
+            background-color: #007bff !important;
+            border: 1px solid #007bff !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            color: #ffffff !important;
+            background-color: #3a3a3a !important;
+            border: 1px solid #4a4a4a !important;
+        }
+
+        .dataTables_wrapper .dataTables_info {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<a href="/home" class="btn-voltar">Voltar</a>
+
+    <div class="container mt-5">
+        <h1>Gerenciar Usuários</h1>
+        <table id="usuariosTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Usuário</th>
+                    <th>Função</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for funcionario, funcao in usuarios %}
+                <tr class="{% if funcionario.inativo == 1 %}inativo{% endif %}">
+                    <td>{{ funcionario.usuario }}</td>
+                    <td>{{ funcao.funcao }}</td>
+                    <td>
+                        {% if funcionario.inativo == 1 %}
+                        <form action="/ativar_usuario" method="post">
+                            <input type="hidden" name="id" value="{{ funcionario.id }}">
+                            <button type="submit" class="btn btn-primary">Ativar</button>
+                        </form>
+                        {% else %}
+                        <form action="/desativar_usuario" method="post">
+                            <input type="hidden" name="id" value="{{ funcionario.id }}">
+                            <button type="submit" class="btn btn-danger">Inativar</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        // Verifica o tema ao carregar a página
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        });
+
+        // Função para alternar o tema
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+        }
+
+        $(document).ready(function() {
+            $('#usuariosTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/Portuguese-Brasil.json"
+                },
+                "pagingType": "full_numbers"
+            });
+        });
+    </script>
+</body>
+</html>
